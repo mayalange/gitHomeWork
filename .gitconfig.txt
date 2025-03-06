@@ -1,0 +1,2 @@
+git config --global user.name "Марина Деречина"
+git config --global user.email "18-9292@mail.ru"
