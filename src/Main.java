@@ -4,12 +4,14 @@ public class Main {
     public static void main(String[] args) {
     }
 
+    //Task #1
     private static void printThreeWords() {
         System.out.println("Orange");
         System.out.println("Banana");
         System.out.println("Apple");
     }
 
+    //Task #2
     private static void checkSumSign() {
         int a = 9;
         int b = 1;
@@ -23,6 +25,7 @@ public class Main {
         }
     }
 
+    //Task #3
     private static void printColor() {
         int value = 90;
 
@@ -35,6 +38,7 @@ public class Main {
         }
     }
 
+    //Task #4
     private static void compareNumbers() {
         int a = 9;
         int b = 10;
@@ -46,6 +50,7 @@ public class Main {
         }
     }
 
+    //Task #5
     private static void compareNumbersWithLimits(int firstNumber, int secondNumber) {
 
         int sum = firstNumber + secondNumber;
@@ -57,6 +62,7 @@ public class Main {
         }
     }
 
+    //Task #6
     private static void checkNumber(int number) {
 
         if (number >= 0) {
@@ -66,6 +72,7 @@ public class Main {
         }
     }
 
+    //Task #7
     private static void checkNumberAndReturnBoolean(int number) {
 
         if (number >= 0) {
