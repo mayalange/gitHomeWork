@@ -13,7 +13,6 @@ public class LessonSixTasks {
         int[] sourceArray = {1, 2, 3, 4};
         int[] targetArray = {5, 6, 7};
         arrayCopy(sourceArray, targetArray);
-
     }
 
     /**
