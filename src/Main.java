@@ -1,7 +1,11 @@
 package src;
 
+import lesson7.Car;
+
 public class Main {
     public static void main(String[] args) {
+        Car car = new Car();
+        car.start();
     }
 
     //Task #1
