@@ -1,9 +1,37 @@
 package src;
 
+import com.github.javafaker.Faker;
 import lesson7.Car;
+import lesson9.Employee;
+
+import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) {
+        Faker faker = new Faker();
+        PrintStream out = System.out;
+
+        Employee employee1 = new Employee(faker.name().fullName(), faker.job().title(), faker.internet().emailAddress(), faker.phoneNumber().cellPhone(),
+                faker.number().numberBetween(100, 10000), faker.number().numberBetween(18, 65));
+
+        Employee employee2 = new Employee(faker.name().fullName(), faker.job().title(), faker.internet().emailAddress(), faker.phoneNumber().cellPhone(),
+                faker.number().numberBetween(100, 10000), faker.number().numberBetween(18, 65));
+
+        Employee employee3 = new Employee(faker.name().fullName(), faker.job().title(), faker.internet().emailAddress(), faker.phoneNumber().cellPhone(),
+                faker.number().numberBetween(100, 10000), faker.number().numberBetween(18, 65));
+
+        Employee employee4 = new Employee(faker.name().fullName(), faker.job().title(), faker.internet().emailAddress(), faker.phoneNumber().cellPhone(),
+                faker.number().numberBetween(100, 10000), faker.number().numberBetween(18, 65));
+
+        Employee employee5 = new Employee(faker.name().fullName(), faker.job().title(), faker.internet().emailAddress(), faker.phoneNumber().cellPhone(),
+                faker.number().numberBetween(100, 10000), faker.number().numberBetween(18, 65));
+
+        Employee[] employees = {employee1, employee2, employee3, employee4, employee5};
+
+        for (Employee employee : employees) {
+            employee.printEmployeeInformation(out, employee);
+        }
+
         Car car = new Car();
         car.start();
     }
