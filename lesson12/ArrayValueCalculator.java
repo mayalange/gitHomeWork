@@ -4,13 +4,13 @@ public class ArrayValueCalculator extends Exception {
         String[][] array = {
                 {"1", "2", "3", "4"},
                 {"5", "6", "7", "8"},
-                {"9", "ы", "11", "12"},
+                {"9", "10", "11", "12"},
                 {"13", "14", "15", "16"}};
 
         doCalc(array);
     }
 
-    public static void doCalc(String[][] array) throws ArraySizeException, ArrayDataException {
+    public static int doCalc(String[][] array) throws ArraySizeException, ArrayDataException {
         if (array.length != 4) {
             throw new ArraySizeException("введен неверный размер массива");
 
@@ -33,12 +33,12 @@ public class ArrayValueCalculator extends Exception {
                     sum += Integer.parseInt(array[i][j]);
                 }
             }
+            System.out.println("Сумма: " + sum);
         } catch (Exception e) {
             throw new ArrayDataException("неправильное значение в ячейке: " + "\nСтрока = " + column +
                     "\nСтолбец = " + row);
-        } finally {
-            System.out.println("Сумма: " + sum);
         }
+        return sum;
     }
 
     public static class ArraySizeException extends Exception {
