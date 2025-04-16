@@ -1,4 +1,6 @@
 import com.github.javafaker.Faker;
+import phonebook.Record;
+import phonebook.TelephonBook;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,28 @@ public class ArrayListHomeWork {
         ));
 
         System.out.println(calcOccurance(words));
+
+
+        //Lesson#2
+        String name = faker.name().firstName();
+        Record record1 = new Record(name, faker.phoneNumber().cellPhone());
+        Record record2 = new Record(faker.name().firstName(), faker.phoneNumber().cellPhone());
+        Record record3 = new Record(faker.name().firstName(), faker.phoneNumber().cellPhone());
+        Record record4 = new Record(faker.name().firstName(), faker.phoneNumber().cellPhone());
+        Record record5 = new Record(name, faker.phoneNumber().cellPhone());
+        Record record6 = new Record(name, faker.phoneNumber().cellPhone());
+
+        TelephonBook telephonBook = new TelephonBook();
+        telephonBook.add(record1);
+        telephonBook.add(record2);
+        telephonBook.add(record3);
+        telephonBook.add(record4);
+        telephonBook.add(record5);
+        telephonBook.add(record6);
+
+        System.out.println(telephonBook.find(name).toString());
+
+        System.out.println(telephonBook.findAll(name).toString());
     }
 
     //Task #1
