@@ -59,6 +59,7 @@ public class ArrayListHomeWork {
         telephonBook.add(record5);
         telephonBook.add(record6);
 
+        System.out.println(telephonBook.getPhonebook());
         System.out.println(telephonBook.find(name).toString());
 
         System.out.println(telephonBook.findAll(name).toString());
