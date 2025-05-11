@@ -1,5 +1,8 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
 
 public class MainForLesson19 {
     public static void main(String[] args) throws IOException {
@@ -7,7 +10,7 @@ public class MainForLesson19 {
         File[] files = folder.listFiles();
         String fileName = "";
         if (files.length != 0) {
-            fileName = String.valueOf(files[files.length - 1]).split("\\\\")[7];
+            fileName = List.of(String.valueOf(files[files.length - 1]).split("\\\\")).getLast();
         }
         if (!fileName.isEmpty()) {
             FileLoggerConfiguration fileLoggerConfiguration = new FileLoggerConfiguration(LoggingLevel.DEBUG, 200, fileName);
