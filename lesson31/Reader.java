@@ -11,6 +11,8 @@ public class Reader {
         this.phone = phone;
     }
 
+    public Reader(){};
+
     public int getReaderId() {
         return readerId;
     }

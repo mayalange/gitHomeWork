@@ -7,7 +7,7 @@ public interface LibraryApi {
 
     Book updateBookStatus(int bookId, String status) throws SQLException;
 
-    Reader addReader(Reader reader);
+    Reader addReader(Reader reader) throws SQLException;
 
     List<OccupiedBook> getAllOccupiedBooks();
 
