@@ -9,11 +9,11 @@ public interface LibraryApi {
 
     Reader addReader(Reader reader) throws SQLException;
 
-    List<OccupiedBook> getAllOccupiedBooks();
+    List<OccupiedBook> getAllOccupiedBooks() throws SQLException;
 
-    Reader updateReader(Reader reader);
+    Reader updateReader(Reader reader) throws SQLException;
 
-    List<Book> filterBooksByStatus(String status);
+    List<Book> filterBooksByStatus(String status) throws SQLException;
 
-    List<Book> findBooksBorrowedAfterDate(Date date);
+    List<Book> findBooksBorrowedAfterDate(Date date) throws SQLException;
 }

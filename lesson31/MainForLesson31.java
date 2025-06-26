@@ -1,4 +1,7 @@
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainForLesson31 implements LibraryApi {
@@ -6,7 +9,7 @@ public class MainForLesson31 implements LibraryApi {
     private static String user;
     private static String password;
 
-    public static void main(String[] args) throws ClassNotFoundException, SQLException {
+    public static void main(String[] args) throws ClassNotFoundException, SQLException, ParseException {
         Class.forName("org.postgresql.Driver");
         url = "jdbc:postgresql://localhost:5432/mydatabase";
         user = "admin";
@@ -28,9 +31,23 @@ public class MainForLesson31 implements LibraryApi {
         reader.setEmail("66@mail.ru");
         reader.setPhone("66666");
 
-//        app.addBook(book);
-//        app.updateBookStatus(5,"returned");
-//        app.addReader(reader);
+        Reader readerToUpdate = new Reader();
+        readerToUpdate.setReaderId(1);
+        readerToUpdate.setName("леша");
+        readerToUpdate.setEmail("new@email.com");
+        readerToUpdate.setPhone("3333");
+
+        app.addBook(book);
+        app.updateBookStatus(5,"returned");
+        app.addReader(reader);
+        app.getAllOccupiedBooks();
+        app.updateReader(readerToUpdate);
+        app.filterBooksByStatus("returned");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date utilDate = sdf.parse("2025-06-10");
+        java.sql.Date searchDate = new java.sql.Date(utilDate.getTime());
+        app.findBooksBorrowedAfterDate(searchDate);
+
     }
 
     @Override
@@ -97,22 +114,156 @@ public class MainForLesson31 implements LibraryApi {
     }
 
     @Override
-    public List<OccupiedBook> getAllOccupiedBooks() {
-        return List.of();
+    public List<OccupiedBook> getAllOccupiedBooks() throws SQLException {
+        List<OccupiedBook> occupiedBooks = new ArrayList<>();
+        Connection connection = DriverManager.getConnection(url, user, password);
+
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT b.book_id, b.title, b.author, b.published_year, b.genre, " +
+                        "       r.reader_id, r.name, r.email, r.phone, " +
+                        "       bb.borrow_date " +
+                        "FROM \"mySchema\".borrowed_books bb " +
+                        "JOIN \"mySchema\".books b ON bb.book_id = b.book_id " +
+                        "JOIN \"mySchema\".readers r ON bb.reader_id = r.reader_id " +
+                        "WHERE bb.status = 'borrowed'")) {
+            statement.executeQuery();
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Book book = new Book();
+                    book.setBookId(resultSet.getInt("book_id"));
+                    book.setTitle(resultSet.getString("title"));
+                    book.setAuthor(resultSet.getString("author"));
+                    book.setPublishedYear(resultSet.getInt("published_year"));
+                    book.setGenre(resultSet.getString("genre"));
+
+                    Reader reader = new Reader();
+                    reader.setReaderId(resultSet.getInt("reader_id"));
+                    reader.setName(resultSet.getString("name"));
+                    reader.setEmail(resultSet.getString("email"));
+                    reader.setPhone(resultSet.getString("phone"));
+
+                    Date borrowDate = resultSet.getDate("borrow_date");
+
+                    OccupiedBook occupiedBook = new OccupiedBook(book, reader, borrowDate);
+                    occupiedBooks.add(occupiedBook);
+
+                    for (OccupiedBook occupiedBook1 : occupiedBooks) {
+                        Book book1 = occupiedBook1.getBook();
+                        Reader reader1 = occupiedBook1.getReader();
+
+                        System.out.printf("| %-20s | %-20s | %-10s | %-15s |%n",
+                                book1.getTitle(),
+                                book1.getAuthor(),
+                                reader1.getName(),
+                                occupiedBook1.getBorrowDate());
+                    }
+                }
+
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } finally {
+                connection.close();
+            }
+
+            return occupiedBooks;
+        }
     }
 
     @Override
-    public Reader updateReader(Reader reader) {
-        return null;
+    public Reader updateReader(Reader reader) throws SQLException {
+        Connection connection = DriverManager.getConnection(url, user, password);
+        try (PreparedStatement statement = connection.prepareStatement("UPDATE \"mySchema\".readers SET name = ?, email = ?, phone = ? WHERE reader_id = ?", Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, reader.getName());
+            statement.setString(2, reader.getEmail());
+            statement.setString(3, reader.getPhone());
+            statement.setInt(4, reader.getReaderId());
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connection.close();
+        }
+
+        return reader;
     }
 
     @Override
-    public List<Book> filterBooksByStatus(String status) {
-        return List.of();
+    public List<Book> filterBooksByStatus(String status) throws SQLException {
+        List<Book> books = new ArrayList<>();
+        Connection connection = DriverManager.getConnection(url, user, password);
+
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT b.* FROM \"mySchema\".books b " +
+                        "JOIN \"mySchema\".borrowed_books bb ON b.book_id = bb.book_id " +
+                        "WHERE bb.status = ?")) {
+
+            statement.setString(1, status);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Book book = new Book();
+                    book.setBookId(resultSet.getInt("book_id"));
+                    book.setTitle(resultSet.getString("title"));
+                    book.setAuthor(resultSet.getString("author"));
+                    book.setPublishedYear(resultSet.getInt("published_year"));
+                    book.setGenre(resultSet.getString("genre"));
+
+                    books.add(book);
+
+                    System.out.printf("| %-20s | %-20s | %-10d | %-15s |%n",
+                            book.getTitle(),
+                            book.getAuthor(),
+                            book.getPublishedYear(),
+                            book.getGenre());
+                }
+                return books;
+            }
+        }
     }
 
     @Override
-    public List<Book> findBooksBorrowedAfterDate(java.util.Date date) {
-        return List.of();
+    public List<Book> findBooksBorrowedAfterDate(java.util.Date date) throws SQLException {
+        List<Book> books = new ArrayList<>();
+        Connection connection = DriverManager.getConnection(url, user, password);
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+
+        try (PreparedStatement statement = connection.prepareStatement(
+                "SELECT b.book_id, b.title, b.author, b.published_year, b.genre, " +
+                        "bb.borrow_date AS borrow_date " +  // Явно задаем алиас
+                        "FROM \"mySchema\".books b " +
+                        "JOIN \"mySchema\".borrowed_books bb ON b.book_id = bb.book_id " +
+                        "WHERE bb.borrow_date > ? AND bb.status = 'borrowed'")) {
+
+            statement.setDate(1, sqlDate);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Book book = new Book();
+                    book.setBookId(resultSet.getInt("book_id"));
+                    book.setTitle(resultSet.getString("title"));
+                    book.setAuthor(resultSet.getString("author"));
+                    book.setPublishedYear(resultSet.getInt("published_year"));
+                    book.setGenre(resultSet.getString("genre"));
+
+                    books.add(book);
+
+                    Date borrowDate = resultSet.getDate("borrow_date");
+
+                    System.out.printf("| %-20s | %-20s | %-10d | %-15s | %-15s |%n",
+                            book.getTitle(),
+                            book.getAuthor(),
+                            book.getPublishedYear(),
+                            book.getGenre(),
+                            borrowDate);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            connection.close();
+        }
+        return books;
     }
 }

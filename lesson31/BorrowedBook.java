@@ -17,6 +17,8 @@ public class BorrowedBook {
         this.status = status;
     }
 
+    public BorrowedBook(){};
+
     public int getBorrowId() {
         return borrowId;
     }
