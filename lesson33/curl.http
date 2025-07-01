@@ -1,0 +1,19 @@
+//task #1
+# curl -X GET https://timeapi.io/api/health/check
+###
+
+//task #2
+# curl -X GET https://timeapi.io/api/time/current/zone?timeZone=Europe%2FAmsterdam
+###
+
+//task #3
+# curl -X GET https://timeapi.io/api/time/current/ip?ipAddress=237.71.232.203
+###
+
+//task #4
+# curl -X GET https://timeapi.io/api/conversion/dayoftheweek/2025-06-29
+###
+
+//task #5
+# curl -X POST -H "Content-type:application/json" https://timeapi.io/api/conversion/translate -d "{"dateTime": "2025-06-29 17:45:00","languageCode": "de"}"
+###
